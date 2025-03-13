@@ -1,10 +1,10 @@
-import App from "@/components/App";
+import WebSpeechApi from "@/components/WebSpeechApi";
 
 export default function Home() {
   return (
     <>
       <div className="">
-        <App />
+        <WebSpeechApi />
       </div>
     </>
   );

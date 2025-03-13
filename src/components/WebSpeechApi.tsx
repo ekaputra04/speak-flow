@@ -1,7 +1,7 @@
 "use client";
 import { useState, useRef } from "react";
 
-export default function Home() {
+export default function WebSpeechApi() {
   const [text, setText] = useState("");
   const [transcript, setTranscript] = useState("");
   const [listening, setListening] = useState(false);
@@ -93,11 +93,13 @@ export default function Home() {
   return (
     <main className="flex flex-col justify-center items-center bg-gray-100 p-6 min-h-screen">
       <div className="bg-white shadow-lg p-6 rounded-lg w-full max-w-lg text-center">
-        <h1 className="mb-4 font-bold text-2xl">TTS & STT App</h1>
+        <h1 className="mb-4 font-bold text-slate-800 text-2xl">
+          TTS & STT App
+        </h1>
 
         {/* Input untuk TTS */}
         <textarea
-          className="mb-4 p-2 border border-gray-300 rounded w-full"
+          className="mb-4 p-2 border border-gray-300 rounded w-full text-slate-800"
           rows={3}
           placeholder="Masukkan teks untuk dibaca..."
           value={text}
@@ -114,7 +116,7 @@ export default function Home() {
           type="file"
           accept=".txt"
           onChange={handleFileUpload}
-          className="mb-4 p-2 border w-full"
+          className="mb-4 p-2 border w-full text-slate-800"
         />
 
         {audioURL && (
@@ -139,7 +141,7 @@ export default function Home() {
           🎤 {listening ? "Mendengarkan..." : "Mulai Bicara"}
         </button>
 
-        <p className="bg-gray-50 mt-4 p-2 border border-gray-300 rounded min-h-[50px]">
+        <p className="bg-gray-50 mt-4 p-2 border border-gray-300 rounded min-h-[50px] text-slate-800">
           {transcript || "Hasil akan muncul di sini..."}
         </p>
 
@@ -154,7 +156,7 @@ export default function Home() {
           type="file"
           accept="audio/*"
           ref={fileInputRef}
-          className="mt-4 p-2 border w-full"
+          className="mt-4 p-2 border w-full text-slate-800"
         />
       </div>
     </main>
