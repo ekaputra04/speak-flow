@@ -7,6 +7,8 @@ export default function WebSpeechApi() {
   const [listening, setListening] = useState(false);
   const [audioURL, setAudioURL] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [rate, setRate] = useState(1);
+  const [pitch, setPitch] = useState(1);
 
   const handleSpeak = (inputText: string) => {
     if (!window.speechSynthesis) {
@@ -16,6 +18,8 @@ export default function WebSpeechApi() {
 
     const utterance = new SpeechSynthesisUtterance(inputText);
     utterance.lang = "id-ID";
+    utterance.rate = rate; // Menyesuaikan kecepatan
+    utterance.pitch = pitch; // Menyesuaikan pitch
 
     window.speechSynthesis.speak(utterance);
   };
@@ -77,6 +81,36 @@ export default function WebSpeechApi() {
           value={text}
           onChange={(e) => setText(e.target.value)}
         />
+        <div className="mb-4">
+          <label className="block text-slate-800">
+            Kecepatan: {rate.toFixed(1)}
+          </label>
+          <input
+            type="range"
+            min="0.5"
+            max="2"
+            step="0.1"
+            value={rate}
+            onChange={(e) => setRate(parseFloat(e.target.value))}
+            className="w-full"
+          />
+        </div>
+
+        <div className="mb-4">
+          <label className="block text-slate-800">
+            Pitch: {pitch.toFixed(1)}
+          </label>
+          <input
+            type="range"
+            min="0.5"
+            max="2"
+            step="0.1"
+            value={pitch}
+            onChange={(e) => setPitch(parseFloat(e.target.value))}
+            className="w-full"
+          />
+        </div>
+
         <button
           onClick={() => handleSpeak(text)}
           className="bg-blue-500 hover:bg-blue-600 mb-2 py-2 rounded w-full text-white"
