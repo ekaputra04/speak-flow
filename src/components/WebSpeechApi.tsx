@@ -8,43 +8,14 @@ export default function WebSpeechApi() {
   const [audioURL, setAudioURL] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleSpeak = () => {
+  const handleSpeak = (inputText: string) => {
     if (!window.speechSynthesis) {
       alert("Browser tidak mendukung speech synthesis");
       return;
     }
 
-    const utterance = new SpeechSynthesisUtterance(text);
+    const utterance = new SpeechSynthesisUtterance(inputText);
     utterance.lang = "id-ID";
-
-    const audioContext = new AudioContext();
-    const destination = audioContext.createMediaStreamDestination();
-    const mediaRecorder = new MediaRecorder(destination.stream);
-    const audioChunks: Blob[] = [];
-
-    mediaRecorder.ondataavailable = (event) => {
-      if (event.data.size > 0) {
-        audioChunks.push(event.data);
-      }
-    };
-
-    mediaRecorder.onstop = () => {
-      const audioBlob = new Blob(audioChunks, { type: "audio/wav" });
-      const url = URL.createObjectURL(audioBlob);
-      setAudioURL(url);
-    };
-
-    mediaRecorder.start();
-
-    const utteranceSource = audioContext.createMediaStreamSource(
-      destination.stream
-    );
-    utteranceSource.connect(audioContext.destination);
-
-    utterance.onend = () => {
-      mediaRecorder.stop();
-      audioContext.close();
-    };
 
     window.speechSynthesis.speak(utterance);
   };
@@ -79,7 +50,9 @@ export default function WebSpeechApi() {
     recognition.onend = () => setListening(false);
 
     recognition.onresult = (event: any) => {
-      setTranscript(event.results[0][0].transcript);
+      const spokenText = event.results[0][0].transcript;
+      setTranscript(spokenText);
+      handleSpeak(spokenText); // Langsung mengucapkan hasil transkripsi
     };
 
     recognition.start();
@@ -94,10 +67,9 @@ export default function WebSpeechApi() {
     <main className="flex flex-col justify-center items-center bg-gray-100 p-6 min-h-screen">
       <div className="bg-white shadow-lg p-6 rounded-lg w-full max-w-lg text-center">
         <h1 className="mb-4 font-bold text-slate-800 text-2xl">
-          TTS & STT App
+          TTS & STT & STS App
         </h1>
 
-        {/* Input untuk TTS */}
         <textarea
           className="mb-4 p-2 border border-gray-300 rounded w-full text-slate-800"
           rows={3}
@@ -106,7 +78,7 @@ export default function WebSpeechApi() {
           onChange={(e) => setText(e.target.value)}
         />
         <button
-          onClick={handleSpeak}
+          onClick={() => handleSpeak(text)}
           className="bg-blue-500 hover:bg-blue-600 mb-2 py-2 rounded w-full text-white"
         >
           🔊 Ucapkan Teks
@@ -119,19 +91,8 @@ export default function WebSpeechApi() {
           className="mb-4 p-2 border w-full text-slate-800"
         />
 
-        {audioURL && (
-          <a
-            href={audioURL}
-            download="tts_audio.wav"
-            className="block mt-2 text-blue-600 underline"
-          >
-            🎵 Unduh Suara
-          </a>
-        )}
-
         <hr className="my-6" />
 
-        {/* Output untuk STT */}
         <button
           onClick={handleListen}
           className={`w-full py-2 rounded ${
@@ -151,13 +112,6 @@ export default function WebSpeechApi() {
         >
           📋 Salin Teks
         </button>
-
-        <input
-          type="file"
-          accept="audio/*"
-          ref={fileInputRef}
-          className="mt-4 p-2 border w-full text-slate-800"
-        />
       </div>
     </main>
   );
